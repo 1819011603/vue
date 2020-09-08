@@ -3,18 +3,14 @@
     <!-- 同步 -->
     <div class="top-card">
       <div class="icon-wrap">
-        <img :src="playlists.coverImgUrl" alt="" />
+        <img :src="playlists.coverImgUrl" alt />
       </div>
-      <div class="content-wrap" >
+      <div class="content-wrap">
         <div class="tag">精品歌单</div>
-        <div class="title">
-          {{playlists.name}}
-        </div>
-        <div class="info">
-          {{playlists.description}}
-        </div>
+        <div class="title">{{playlists.name}}</div>
+        <div class="info">{{playlists.description}}</div>
       </div>
-      <img src="../assets/listCover.jpg" alt="" class="bg" />
+      <img src="../assets/listCover.jpg" alt class="bg" />
       <div class="bg-mask"></div>
     </div>
     <div class="tab-container">
@@ -38,13 +34,20 @@
       <!-- tab的内容区域 -->
       <div class="tab-content">
         <div class="items">
-          <div v-for="(item,index) in playlist" :key="index" class="item" @click="enterList(item.id)">
+          <div
+            v-for="(item,index) in playlist"
+            :key="index"
+            class="item"
+            @click="enterList(item.id)"
+          >
             <div class="img-wrap">
               <div class="num-wrap">
                 播放量:
-                <span class="num">{{item.playCount >= 100000?Math.round(item.playCount/10000)+'万':item.playCount}}</span>
+                <span
+                  class="num"
+                >{{item.playCount >= 100000?Math.round(item.playCount/10000)+'万':item.playCount}}</span>
               </div>
-              <img :src="item.coverImgUrl" alt="" />
+              <img :src="item.coverImgUrl" alt />
               <span class="iconfont icon-play"></span>
             </div>
             <p class="name">{{item.description}}</p>
@@ -60,74 +63,73 @@
       :total="total"
       :current-page="page"
       :page-size="10"
-    >
-    </el-pagination>
-    
+    ></el-pagination>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 export default {
-  name: 'recommend',
-  created(){
-    this.top()
-    this.list()
+  name: "recommend",
+  created() {
+    this.top();
+    this.list();
   },
-  watch:{
-    cat(){
-      this.page=1
-      this.list()
-      this.top()
-    }
+  watch: {
+    cat() {
+      this.page = 1;
+      this.list();
+      this.top();
+    },
   },
   data() {
     return {
       // 总条数
-      total:1,
+      total: 1,
       // 页码
-      page:1 ,
-      cat:"全部",
-      playlists:{},
-      playlist:[],
-      id:'',
+      page: 1,
+      cat: "全部",
+      playlists: {},
+      playlist: [],
+      id: "",
     };
   },
   methods: {
-    enterList(id){
-      this.$router.push('/playlist?id='+id)
-      
-    }
-    ,
-    top(){
-      axios.get('https://autumnfish.cn/top/playlist/highquality?limit=1&cat='+this.cat).then(res=>{
-        this.playlists=res.data.playlists[0]
-    }).catch(err=>console.log(err))
-
+    enterList(id) {
+      this.$router.push("/playlist?id=" + id);
     },
-    list(){
+    top() {
+      axios
+        .get(
+          "https://autumnfish.cn/top/playlist/highquality?limit=1&cat=" +
+            this.cat
+        )
+        .then((res) => {
+          this.playlists = res.data.playlists[0];
+        })
+        .catch((err) => console.log(err));
+    },
+    list() {
       axios({
-      url:'https://autumnfish.cn/top/playlist/',
-      method:'get',
-      params:{
-        limit:10,
-        offset:(this.page-1)*10,
-        cat:this.cat
-      }
-
-    }).then(res=>{
-      this.total=res.data.total
-      this.playlist=res.data.playlists
-    })
+        url: "https://autumnfish.cn/top/playlist/",
+        method: "get",
+        params: {
+          limit: 10,
+          offset: (this.page - 1) * 10,
+          cat: this.cat,
+        },
+      }).then((res) => {
+        this.total = res.data.total;
+        this.playlist = res.data.playlists;
+      });
     },
     handleCurrentChange(val) {
-      this.page=val
-      this.list()
-    }
-  }
+      this.page = val;
+      this.list();
+    },
+  },
 };
 </script>
 
 <style >
-
 </style>
